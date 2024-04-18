@@ -1,6 +1,9 @@
 package main
 
 import (
+	"math"
+	"strconv"
+
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 )
@@ -30,22 +33,33 @@ type NodeGraph struct {
 }
 
 func DefaultNodeGraph() NodeGraph {
-	c1 := container.New(VERTICAL, lipgloss.NewStyle().
-		Border(lipgloss.DoubleBorder()).Padding(2).
-		Background(lipgloss.Color("#000003A")), []Node{
-		text.New("DEEZ NUTS ON YOUR MOUTH", lipgloss.NewStyle()),
-		text.New("DEEZ NUTS IN YOUR MOUTH",
-			lipgloss.NewStyle().Foreground(lipgloss.Color("#FAF00FF")))},
+
+	var cols []Node
+	for x := 0; x < 20; x++ {
+		var texts []Node
+		for y := 0; y < 40; y++ {
+			s := lipgloss.NewStyle().
+				Foreground(lipgloss.
+					Color(strconv.Itoa(int(math.Tan(float64(x) * float64(y))))))
+			texts = append(texts, text.New("█", s))
+
+		}
+		cols = append(cols, container.New(HORIZONTAL, lipgloss.NewStyle(), texts))
+	}
+	c := container.New(VERTICAL, lipgloss.NewStyle(), cols)
+	header := text.New("20x40 grid forground color = math.Tan(x * y)", lipgloss.NewStyle().
+		Bold(true))
+	footer := text.New("made with bubbletea!", lipgloss.NewStyle().
+		Foreground(lipgloss.Color("#6C50FF")).
+		Bold(true).
+		Border(lipgloss.RoundedBorder()),
 	)
-	c2 := container.New(VERTICAL, lipgloss.NewStyle(), []Node{
-		text.New("DEEZ NUTS AROUND YOUR MOUTH", lipgloss.NewStyle()),
-		text.New("DEEZ NUTS OUDSIDE YOUR MOUTH",
-			lipgloss.NewStyle().Padding(2).Foreground(lipgloss.Color("#FA050FF")))},
-	)
+
 	return NodeGraph{
 		Graph: Container{
-			nodes: []Node{c1, c2},
-			join:  HORIZONTAL,
+			nodes: []Node{header, c, footer},
+			join:  VERTICAL,
+			style: lipgloss.NewStyle().Align(lipgloss.Center),
 		}}
 }
 
