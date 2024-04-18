@@ -1,0 +1,2 @@
+app:
+	make ./app/Makefile
