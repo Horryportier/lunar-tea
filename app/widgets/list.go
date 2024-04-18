@@ -95,7 +95,7 @@ func (m model) View() string {
 	return "\n" + m.list.View()
 }
 
-func main() {
+func Init() model  {
 	items := []list.Item{
 		item("Ramen"),
 		item("Tomato Soup"),
@@ -121,8 +121,4 @@ func main() {
 
 	m := model{list: l}
 
-	if _, err := tea.NewProgram(m).Run(); err != nil {
-		fmt.Println("Error running program:", err)
-		os.Exit(1)
-	}
 }
