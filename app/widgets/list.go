@@ -3,12 +3,12 @@ package widgets
 import (
 	"fmt"
 	"io"
-	"os"
 	"strings"
 
 	"github.com/charmbracelet/bubbles/list"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
+	n "lunar-tea/node"
 )
 
 const listHeight = 14
@@ -49,17 +49,17 @@ func (d itemDelegate) Render(w io.Writer, m list.Model, index int, listItem list
 	fmt.Fprint(w, fn(str))
 }
 
-type model struct {
+type ListWidget struct {
 	list     list.Model
 	choice   string
 	quitting bool
 }
 
-func (m model) Init() tea.Cmd {
+func (m ListWidget) Init() tea.Cmd {
 	return nil
 }
 
-func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+func (m ListWidget) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
 		m.list.SetWidth(msg.Width)
@@ -85,7 +85,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return m, cmd
 }
 
-func (m model) View() string {
+func (m ListWidget) View() string {
 	if m.choice != "" {
 		return quitTextStyle.Render(fmt.Sprintf("%s? Sounds good to me.", m.choice))
 	}
@@ -95,7 +95,7 @@ func (m model) View() string {
 	return "\n" + m.list.View()
 }
 
-func Init() model  {
+func (lw ListWidget) New() ListWidget {
 	items := []list.Item{
 		item("Ramen"),
 		item("Tomato Soup"),
@@ -119,6 +119,12 @@ func Init() model  {
 	l.Styles.PaginationStyle = paginationStyle
 	l.Styles.HelpStyle = helpStyle
 
-	m := model{list: l}
+	return ListWidget{list: l}
+}
+func (lw ListWidget) Children() []n.Node {
+	return []n.Node{}
+}
 
+func (lw ListWidget) Type() n.NodeType {
+	return n.LEAF
 }
