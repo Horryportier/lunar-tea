@@ -1,6 +1,7 @@
 package widgets
 
 import (
+	"encoding/json"
 	n "lunar-tea/node"
 
 	tea "github.com/charmbracelet/bubbletea"
@@ -69,4 +70,12 @@ func (c Container) Update(message tea.Msg) (tea.Model, tea.Cmd) {
 	}
 
 	return c, tea.Batch(cmds...)
+}
+
+func (m Container) Marshal() ([]byte, error) {
+	_map := make(map[string]string)
+	_map["type"] = "container"
+
+	b, err := json.Marshal(_map)
+	return b, err
 }

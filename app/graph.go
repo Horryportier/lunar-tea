@@ -13,13 +13,13 @@ import (
 
 var (
 	current_container = 0
-	containers        = []n.Node{container.New(n.VERTICAL, lipgloss.NewStyle(), MakeGrid(
+	containers        = []n.Node{w.NewContainer(n.VERTICAL, lipgloss.NewStyle(), MakeGrid(
 		func(x int, y int) int { return int(math.Tan(float64(x) * float64(y))) })),
-		container.New(n.VERTICAL, lipgloss.NewStyle(), MakeGrid(
+		w.NewContainer(n.VERTICAL, lipgloss.NewStyle(), MakeGrid(
 			func(x int, y int) int { return x * y })),
-		container.New(n.VERTICAL,
+		w.NewContainer(n.VERTICAL,
 			lipgloss.NewStyle().Border(lipgloss.RoundedBorder()),
-			[]n.Node{text.New("ligma balls", lipgloss.NewStyle())}),
+			[]n.Node{w.NewTextWidget("ligma balls", lipgloss.NewStyle())}),
 	}
 )
 
@@ -36,10 +36,10 @@ func MakeGrid(fn calcXY) []n.Node {
 			s := lipgloss.NewStyle().
 				Foreground(lipgloss.
 					Color(strconv.Itoa(fn(x, y))))
-			texts = append(texts, text.New("█", s))
+			texts = append(texts, w.NewTextWidget("█", s))
 
 		}
-		cols = append(cols, container.New(n.HORIZONTAL, lipgloss.NewStyle(), texts))
+		cols = append(cols, w.NewContainer(n.HORIZONTAL, lipgloss.NewStyle(), texts))
 	}
 	return cols
 }

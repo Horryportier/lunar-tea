@@ -20,4 +20,5 @@ type Node interface {
 	View() string
 	Type() NodeType
 	Update(message tea.Msg) (tea.Model, tea.Cmd)
+	Marshal() ([]byte, error)
 }

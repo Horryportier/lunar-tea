@@ -3,12 +3,15 @@ package widgets
 import (
 	"fmt"
 	"io"
+	"strconv"
 	"strings"
+
+	n "lunar-tea/node"
+	j "lunar-tea/serialize"
 
 	"github.com/charmbracelet/bubbles/list"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
-	n "lunar-tea/node"
 )
 
 const listHeight = 14
@@ -122,7 +125,7 @@ func intoItems[T ~string](l []T) []list.Item {
 	return items
 }
 
-func NewListWidget(items []string, style ListStyle) ListWidget {
+func NewListWidget[T ~string](items []T, style ListStyle) ListWidget {
 
 	list_items := intoItems(items)
 	const defaultWidth = 20
@@ -140,4 +143,14 @@ func (m ListWidget) Children() []n.Node {
 
 func (m ListWidget) Type() n.NodeType {
 	return n.LEAF
+}
+func (m ListWidget) Marshal() ([]byte, error) {
+	buf, err := j.JsonMap(m, func(T interface{}, m map[string]string) (map[string]string, error) {
+		l := ListWidget(T.(ListWidget))
+		m["type"] = "list"
+		m["quitting"] = strconv.FormatBool(l.quitting)
+		return m, nil
+	})
+
+	return buf, err
 }
