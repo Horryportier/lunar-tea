@@ -22,6 +22,12 @@ var (
 	quitTextStyle     = lipgloss.NewStyle().Margin(1, 0, 2, 4)
 )
 
+type ListStyle struct {
+	Title           lipgloss.Style
+	PaginationStyle lipgloss.Style
+	HelpStyle       lipgloss.Style
+}
+
 type item string
 
 func (i item) FilterValue() string { return "" }
@@ -53,6 +59,19 @@ type ListWidget struct {
 	list     list.Model
 	choice   string
 	quitting bool
+}
+
+func (m ListWidget) Title(s string) ListWidget {
+	m.list.Title = s
+	return m
+}
+func (m ListWidget) SetShowStatusBar(b bool) ListWidget {
+	m.list.SetShowStatusBar(b)
+	return m
+}
+func (m ListWidget) SetFilteringEnabled(b bool) ListWidget {
+	m.list.SetFilteringEnabled(b)
+	return m
 }
 
 func (m ListWidget) Init() tea.Cmd {
@@ -95,36 +114,30 @@ func (m ListWidget) View() string {
 	return "\n" + m.list.View()
 }
 
-func (lw ListWidget) New() ListWidget {
-	items := []list.Item{
-		item("Ramen"),
-		item("Tomato Soup"),
-		item("Hamburgers"),
-		item("Cheeseburgers"),
-		item("Currywurst"),
-		item("Okonomiyaki"),
-		item("Pasta"),
-		item("Fillet Mignon"),
-		item("Caviar"),
-		item("Just Wine"),
+func intoItems[T ~string](l []T) []list.Item {
+	var items []list.Item
+	for _, i := range l {
+		items = append(items, item(i))
 	}
+	return items
+}
 
+func NewListWidget(items []string, style ListStyle) ListWidget {
+
+	list_items := intoItems(items)
 	const defaultWidth = 20
 
-	l := list.New(items, itemDelegate{}, defaultWidth, listHeight)
-	l.Title = "What do you want for dinner?"
-	l.SetShowStatusBar(false)
-	l.SetFilteringEnabled(false)
-	l.Styles.Title = titleStyle
-	l.Styles.PaginationStyle = paginationStyle
-	l.Styles.HelpStyle = helpStyle
+	l := list.New(list_items, itemDelegate{}, defaultWidth, listHeight)
+	l.Styles.Title = style.Title
+	l.Styles.PaginationStyle = style.PaginationStyle
+	l.Styles.HelpStyle = style.HelpStyle
 
 	return ListWidget{list: l}
 }
-func (lw ListWidget) Children() []n.Node {
+func (m ListWidget) Children() []n.Node {
 	return []n.Node{}
 }
 
-func (lw ListWidget) Type() n.NodeType {
+func (m ListWidget) Type() n.NodeType {
 	return n.LEAF
 }

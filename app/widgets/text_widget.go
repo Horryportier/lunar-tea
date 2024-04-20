@@ -11,7 +11,7 @@ type TextWidget struct {
 	style lipgloss.Style
 }
 
-func (tw TextWidget) New(t string, style lipgloss.Style) TextWidget {
+func NewTextWidget(t string, style lipgloss.Style) TextWidget {
 	return TextWidget{s: t, style: style}
 }
 

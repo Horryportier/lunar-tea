@@ -1,2 +1,2 @@
 app:
-	make ./app/Makefile
+	$(MAKE) -C app

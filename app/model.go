@@ -13,31 +13,29 @@ import (
 type model NodeGraph
 type tickMsg time.Time
 
-var text w.TextWidget
-var container w.Container
-var list w.ListWidget
-
 func DefaultNodeGraph() NodeGraph {
 
-	header := text.New("20x40 grid forground color = math.Tan(x * y)", lipgloss.NewStyle().
+	header := w.NewTextWidget("20x40 grid forground color = math.Tan(x * y)", lipgloss.NewStyle().
 		Bold(true))
-	footer := text.New("made with bubbletea!", lipgloss.NewStyle().
+	footer := w.NewTextWidget("made with bubbletea!", lipgloss.NewStyle().
 		Foreground(lipgloss.Color("#6C50FF")).
 		Bold(true).
 		Border(lipgloss.RoundedBorder()),
 	)
-	color_square := container.New(
+	color_square := w.NewContainer(
 		n.VERTICAL,
 		lipgloss.NewStyle().Align(lipgloss.Center),
 		[]n.Node{header, containers[2], footer},
 	)
 
 	return NodeGraph{
-		Graph: container.New(
+		Graph: w.NewContainer(
 			n.HORIZONTAL,
 			lipgloss.NewStyle().Align(lipgloss.Center),
 			[]n.Node{color_square,
-				list.New(),
+				w.NewListWidget([]string{
+					"FOO", "BAR", "BAZ",
+				}, w.ListStyle{}).Title("FOOBARBAZ").SetFilteringEnabled(true),
 			},
 		)}
 }

@@ -13,7 +13,7 @@ type Container struct {
 	style lipgloss.Style
 }
 
-func (c Container) New(join n.JointType, style lipgloss.Style, nodes []n.Node) Container {
+func NewContainer(join n.JointType, style lipgloss.Style, nodes []n.Node) Container {
 	return Container{
 		Nodes: nodes,
 		join:  join,
