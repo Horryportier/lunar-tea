@@ -15,10 +15,8 @@ const (
 )
 
 type Node interface {
-	Init() tea.Cmd
+	tea.Model
 	Children() []Node
-	View() string
 	Type() NodeType
-	Update(message tea.Msg) (tea.Model, tea.Cmd)
 	Marshal() ([]byte, error)
 }
