@@ -3,6 +3,8 @@ package widgets
 import (
 	"encoding/json"
 	n "lunar-tea/node"
+	j "lunar-tea/serialize"
+	s "lunar-tea/style"
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
@@ -10,11 +12,11 @@ import (
 
 type TextWidget struct {
 	s     string
-	style lipgloss.Style
+	Style s.Style
 }
 
 func NewTextWidget(t string, style lipgloss.Style) TextWidget {
-	return TextWidget{s: t, style: style}
+	return TextWidget{s: t, Style: s.Style(style)}
 }
 
 func (m TextWidget) Init() tea.Cmd {
@@ -24,7 +26,7 @@ func (m TextWidget) Children() []n.Node {
 	return []n.Node{}
 }
 func (m TextWidget) View() string {
-	return m.style.Render(m.s)
+	return m.Style.Into().Render(m.s)
 }
 func (m TextWidget) Type() n.NodeType {
 	return n.LEAF
@@ -38,10 +40,16 @@ func (m TextWidget) Serialize() (string, string, error) {
 	return "text", string(b), err
 }
 
-func (m TextWidget) Marshal() ([]byte, error) {
-	_map := make(map[string]string)
-	_map["type"] = "text"
+func (t TextWidget) Marshal() ([]byte, error) {
+	b, err := j.JsonMap(t, "text", func(T interface{}, m map[string]string) (map[string]string, error) {
+		b, err := t.Style.Marshal()
+		if err != nil {
+			return m, err
+		}
+		m["style"] = string(b)
 
-	b, err := json.Marshal(_map)
+		return m, nil
+	})
+
 	return b, err
 }

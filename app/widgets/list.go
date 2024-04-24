@@ -144,10 +144,9 @@ func (m ListWidget) Children() []n.Node {
 func (m ListWidget) Type() n.NodeType {
 	return n.LEAF
 }
-func (m ListWidget) Marshal() ([]byte, error) {
-	buf, err := j.JsonMap(m, func(T interface{}, m map[string]string) (map[string]string, error) {
+func (t ListWidget) Marshal() ([]byte, error) {
+	buf, err := j.JsonMap(t, "list", func(T interface{}, m map[string]string) (map[string]string, error) {
 		l := ListWidget(T.(ListWidget))
-		m["type"] = "list"
 		m["quitting"] = strconv.FormatBool(l.quitting)
 		return m, nil
 	})

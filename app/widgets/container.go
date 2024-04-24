@@ -3,6 +3,7 @@ package widgets
 import (
 	"encoding/json"
 	n "lunar-tea/node"
+	j "lunar-tea/serialize"
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
@@ -72,10 +73,26 @@ func (c Container) Update(message tea.Msg) (tea.Model, tea.Cmd) {
 	return c, tea.Batch(cmds...)
 }
 
-func (m Container) Marshal() ([]byte, error) {
-	_map := make(map[string]string)
-	_map["type"] = "container"
+func (c Container) Marshal() ([]byte, error) {
 
-	b, err := json.Marshal(_map)
+	b, err := j.JsonMap(c, "container", func(T interface{}, m map[string]string) (map[string]string, error) {
+		var node_json []string
+		for _, node := range c.Nodes {
+			b, err := node.Marshal()
+			if err != nil {
+				return m, err
+			}
+			node_json = append(node_json, string(b))
+		}
+		b, err := json.Marshal(node_json)
+		if err != nil {
+			return m, err
+		}
+		m["nodes"] = string(b)
+		m["join"] = c.join.String()
+
+		return m, nil
+	})
+
 	return b, err
 }

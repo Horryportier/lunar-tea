@@ -1,6 +1,8 @@
 package node
 
-import tea "github.com/charmbracelet/bubbletea"
+import (
+	tea "github.com/charmbracelet/bubbletea"
+)
 
 type NodeType int
 
@@ -13,6 +15,14 @@ const (
 	VERTICAL JointType = iota
 	HORIZONTAL
 )
+
+func (j JointType) String() string {
+	if j == VERTICAL {
+		return "vertical"
+	} else {
+		return "horizontal"
+	}
+}
 
 type Node interface {
 	tea.Model

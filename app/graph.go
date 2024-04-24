@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	n "lunar-tea/node"
+	j "lunar-tea/serialize"
 	w "lunar-tea/widgets"
 
 	tea "github.com/charmbracelet/bubbletea"
@@ -79,4 +80,21 @@ func (ng NodeGraph) Update(message tea.Msg) (tea.Model, tea.Cmd) {
 	cmds = append(cmds, cmd)
 
 	return ng, tea.Batch(cmds...)
+}
+
+func (t NodeGraph) Marshal() ([]byte, error) {
+	b, err := j.JsonMap(t, "root", func(T interface{}, m map[string]string) (map[string]string, error) {
+		b, err := t.Graph.Marshal()
+		if err != nil {
+			return m, err
+		}
+		m["graph"] = string(b)
+
+		return m, nil
+	})
+	if err != nil {
+		return b, err
+	}
+
+	return b, err
 }
